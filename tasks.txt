@@ -1,0 +1,18 @@
+//Tasks Date: 01/09/2026
+Today, I will add a Mouse Listener. It has mouse events which are used to
+provide the position in with the event was clicked on. In this instance, the
+current mouse event position and the current chess piece position would be used
+to confirm the current chess piece. This allows getting the correct chess piece
+when clicking it. Later, the chess piece will be moved, according to the correct
+specific chess piece potential movements. For example, the pawn can move once or
+twice initially, at start game only. After that, the pawn may only move once forward
+only, whenever clear forward path. Another piece, the bishop, can move diagonally
+only without any ally pieces in the way.
+
+//Make sure mouse listener it clicking over a chess piece
+//Next, confirm the specific chess piece -> setConfirmedPiece();
+//Assign id 0-5; for each specific piece, pawn = 0, rook = 1, knight = 2, bishop = 3, queen = 4, king = 5
+//Successfully added selected square position when selecting a chess piece
+//color changed to yellow
+
+
