@@ -1,14 +1,19 @@
 package net.crys.board;
 
+import net.crys.pieces.ChessPiece;
 import org.w3c.dom.css.Rect;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Square{
     private int x,y,width,height;
     private Color color;
     private Color defaultColor;
     private Rectangle bounds;
+    //Is square filled and was color chessPiece
+    private boolean filled;
+    private Color chessPieceColor;
     public Square(int x, int y, int width, int height,Color color) {
         this.x = x;
         this.y = y;
@@ -81,4 +86,28 @@ public class Square{
     public void setBounds(Rectangle bounds) {
         this.bounds = bounds;
     }
+
+
+    public void setFilledAndChessPieceColor(ArrayList<ChessPiece> whitePieces, ArrayList<ChessPiece> blackPieces){
+        for(ChessPiece whitePiece:whitePieces){
+            if(whitePiece.getBounds().contains(bounds)){
+                filled = true;
+                chessPieceColor = Color.WHITE;
+                return;
+            }
+        }
+
+        for(ChessPiece blackPiece:blackPieces){
+            if(blackPiece.getBounds().contains(bounds)){
+                filled = true;
+                chessPieceColor = Color.BLACK;
+                return;
+            }
+        }
+
+        filled = false;
+    }
+
+    public boolean isFilled(){return filled;}
+    public Color getChessPieceColor(){return chessPieceColor;}
 }

@@ -4,9 +4,8 @@ import net.crys.GamePanel;
 import net.crys.board.Square;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Map;
-
-
 
 public class Pawn extends ChessPiece {
     private GamePanel gamePanel;
@@ -14,13 +13,17 @@ public class Pawn extends ChessPiece {
     public Pawn(String pos,Color color,ChessPieceType type,GamePanel gamePanel) {
         super(pos,color,type);
         this.gamePanel = gamePanel;
-        setNextPos(pos);
-        setDirections(pos);
-        attackPositions = new String[2];
-        setAttackPositions(pos);
+        if(color == Color.WHITE){
+            setNextPos(pos);
+            setDirections(pos);
+            attackPositions = new String[2];
+            setAttackPositions(pos);
+            System.out.println("Current pos: " + pos);
+            System.out.println("Attack pos: " + attackPositions[0] + "," + attackPositions[1]);
+        }
 
-//        System.out.println("Current pos: " + pos);
-//        System.out.println("Attack pos: " + attackPositions[0] + "," + attackPositions[1]);
+
+
         id = 0;
     }
 
@@ -50,16 +53,37 @@ public class Pawn extends ChessPiece {
     }
 
     @Override
-     public void newPos(ChessPiece piece, Map.Entry<String,Square> entry,String nextPos){
-                piece.setPos(nextPos);
-                piece.setNextPos(piece.getPos());
-                piece.setAttackPositions(piece.getPos());
-                piece.setX(entry.getValue().getX());
-                piece.setY(entry.getValue().getY());
-                piece.getBounds().x = piece.getX();
-                piece.getBounds().y = piece.getY();
-                piece.selected = false;
-                displayPos(piece);
+     public void newPos(ChessPiece whitePiece, ArrayList<ChessPiece> blackPieces, Map.Entry<String,Square> entry, String nextPos){
+                    whitePiece.setPos(nextPos);
+                    whitePiece.setNextPos(whitePiece.getPos());
+                    whitePiece.setAttackPositions(whitePiece.getPos());
+                    whitePiece.setX(entry.getValue().getX());
+                    whitePiece.setY(entry.getValue().getY());
+                    whitePiece.getBounds().x = whitePiece.getX();
+                    whitePiece.getBounds().y = whitePiece.getY();
+                    whitePiece.selected = false;
+                    //displayPos(whitePiece);
+    }
+
+
+
+
+    public boolean isSameNextPos(ChessPiece whitePiece, ArrayList<ChessPiece> blackPieces){
+        for(ChessPiece blackPiece : blackPieces){
+            if(blackPiece.getPos().equals(whitePiece.getNextPos())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSameNextPos2(ChessPiece whitePiece, ArrayList<ChessPiece> blackPieces){
+        for(ChessPiece blackPiece : blackPieces){
+            if(blackPiece.getPos().equals(whitePiece.getNextPos2())){
+                return true;
+            }
+        }
+        return false;
     }
 
     private void displayPos(ChessPiece piece){
@@ -69,6 +93,9 @@ public class Pawn extends ChessPiece {
         System.out.println("yPos: " + piece.getY());
         System.out.println("isSelected: " + piece.selected);
     }
+
+
+
 
     @Override
     public void setNextPos(String pos) {
@@ -93,23 +120,21 @@ public class Pawn extends ChessPiece {
             attackPositions[1] = null;
             return;
         }
-        if(!left){attackPositions[0]=null;}
-        if(!right){attackPositions[1]=null;}
+        if(!left){attackPositions[0]= null;}
+        if(!right){attackPositions[1]= null;}
 
         if(left & up){
             char letter = pos.charAt(0);
-            //System.out.println("letter: " + letter);
             int num = Character.getNumericValue(pos.charAt(1));
+            num = num +1;
             int indexL  = letters.indexOf(letter);
-            //System.out.println("indexL: " + indexL);
-            num++;
             attackPositions[0] = String.valueOf(letters.charAt(indexL-1)) + String.valueOf(num);
         }
         if(right & up){
             char letter = pos.charAt(0);
             int num = Character.getNumericValue(pos.charAt(1));
+            num = num + 1;
             int indexL  = letters.indexOf(letter);
-            num++;
             attackPositions[1] = letters.charAt(indexL+1) + String.valueOf(num);
         }
     }

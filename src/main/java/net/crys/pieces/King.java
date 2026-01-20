@@ -4,6 +4,7 @@ import net.crys.GamePanel;
 import net.crys.board.Square;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.Map;
 
 public class King extends ChessPiece{
@@ -20,7 +21,7 @@ public class King extends ChessPiece{
     }
 
     @Override
-    public void newPos(ChessPiece piece, Map.Entry<String, Square> entry, String nextPos) {
+    public void newPos(ChessPiece piece, ArrayList<ChessPiece> blackPieces, Map.Entry<String, Square> entry, String nextPos) {
 
     }
 

@@ -156,9 +156,7 @@ public class GamePanel extends JPanel implements ActionListener {
         bB2 = new Bishop("h8",Color.BLACK,ChessPieceType.BISHOP);
         //"a7" Testing if whitePawn takes out blackPawn while on whitePawn's attackPos
         bP1 = new Pawn("a3",Color.BLACK,ChessPieceType.PAWN,this);
-        //Testing null type black pawn 2
-        bP2 = null;
-        //bP2 = new Pawn("b3",Color.BLACK,ChessPieceType.PAWN,this);
+        bP2 = new Pawn("b4",Color.BLACK,ChessPieceType.PAWN,this);
         bP3 = new Pawn("c3",Color.BLACK,ChessPieceType.PAWN,this);
         bP4 = new Pawn("d3",Color.BLACK,ChessPieceType.PAWN,this);
         bP5 = new Pawn("e3",Color.BLACK,ChessPieceType.PAWN,this);
@@ -257,37 +255,18 @@ public class GamePanel extends JPanel implements ActionListener {
         for(ChessPiece p:whitePieces){
             p.draw(g);
         }
-
-
-
-
-//        bR1.draw(g);
-//        bK1.draw(g);
-//        bB1.draw(g);
-//        bQ.draw(g);
-//        bK.draw(g);
-//        bB2.draw(g);
-//        bK2.draw(g);
-//        bR2.draw(g);
-//        for (Pawn pawn:bPList) {pawn.draw(g);}
-//        //Draw White Pieces
-//        for (Pawn pawn:wPList) {pawn.draw(g);}
-//        wR1.draw(g);
-//        wK1.draw(g);
-//        wB1.draw(g);
-//        wQ.draw(g);
-//        wK.draw(g);
-//        wB2.draw(g);
-//        wK2.draw(g);
-//        wR2.draw(g);
-
-
-
     }
 
     public void update() {
         showSelectedPiece();
-        //isPawnsAtStart();
+        applyFilledSquares();
+    }
+
+
+    private void applyFilledSquares(){
+        for (Map.Entry<String, Square> entry : squares.entrySet()) {
+            entry.getValue().setFilledAndChessPieceColor(whitePieces,blackPieces);
+        }
     }
 
 
@@ -299,8 +278,6 @@ public class GamePanel extends JPanel implements ActionListener {
                         entry.getValue().setColor(Color.YELLOW);
                     }
                 }
-            } else {
-                //resetSquaresDefaultColor();
             }
 
         }
@@ -353,29 +330,100 @@ public HashMap<String,Square> getSquares(){return squares;}
         for (ChessPiece whitePiece : whitePieces) {
             if (whitePiece.selected) {
                 for (Map.Entry<String, Square> entry : squares.entrySet()) {
-                    //if (entry.getValue().equals(piece.getNextPos()))
-                    //Check if mousePressed in hitting current square
                     switch (whitePiece.type) {
                         case PAWN:
-                            if (entry.getValue().getBounds().contains(x, y)) {
-                                //Confirmed whitePiece attacked blackPiece
-                                if(entry.getKey().equals(whitePiece.confirmedAttackPos(whitePieces,blackPieces))){
-                                    whitePiece.newPos(whitePiece,entry,whitePiece.confirmedAttackPos(whitePieces,blackPieces));
+                            if(entry.getValue().getBounds().contains(x,y)){
+                                //White Pawn attack UpLeft blackPiece, removing it from board
+                                if(entry.getKey().equals(whitePiece.getAttackPositions()[0])
+                                        && entry.getValue().getChessPieceColor() == Color.BLACK) {
+                                    for (int i = 0; i < blackPieces.size(); i++) {
+                                        if (blackPieces.get(i).getPos().equals(entry.getKey())) {
+                                            System.out.println("blackPiecePos: " + blackPieces.get(i).getPos());
+                                            blackPieces.remove(i);
+                                            whitePiece.setPos(whitePiece.getAttackPositions()[0]);
+                                            whitePiece.setNextPos(whitePiece.getPos());
+                                            whitePiece.setDirections(whitePiece.getPos());
+                                            whitePiece.setAttackPositions(whitePiece.getPos());
+                                            whitePiece.setX(entry.getValue().getX());
+                                            whitePiece.setY(entry.getValue().getY());
+                                            whitePiece.getBounds().x = whitePiece.getX();
+                                            whitePiece.getBounds().y = whitePiece.getY();
+                                            whitePiece.selected = false;
+                                            //System.out.println("blackPiecePos: " + blackPieces.get(i).getPos());
+                                        }
+                                    }
+                                }
+                                //White Pawn attack UpRight blackPiece, removing it from board
+                                if(entry.getKey().equals(whitePiece.getAttackPositions()[1])
+                                        && entry.getValue().getChessPieceColor() == Color.BLACK) {
+                                    for (int i = 0; i < blackPieces.size(); i++) {
+                                        if (blackPieces.get(i).getPos().equals(entry.getKey())) {
+                                            System.out.println("blackPiecePos: " + blackPieces.get(i).getPos());
+                                            blackPieces.remove(i);
+                                            whitePiece.setPos(whitePiece.getAttackPositions()[1]);
+                                            whitePiece.setNextPos(whitePiece.getPos());
+                                            whitePiece.setDirections(whitePiece.getPos());
+                                            whitePiece.setAttackPositions(whitePiece.getPos());
+                                            whitePiece.setX(entry.getValue().getX());
+                                            whitePiece.setY(entry.getValue().getY());
+                                            whitePiece.getBounds().x = whitePiece.getX();
+                                            whitePiece.getBounds().y = whitePiece.getY();
+                                            whitePiece.selected = false;
+                                            //System.out.println("blackPiecePos: " + blackPieces.get(i).getPos());
+                                        }
+                                    }
                                 }
 
+                                //Initial Pos either forward move once or twice
                                 if(whitePiece.isInitPos()){
-                                    if(entry.getKey().equals(whitePiece.getNextPos())){
-                                        whitePiece.newPos(whitePiece, entry, whitePiece.getNextPos());
+                                    if(entry.getKey().equals(whitePiece.getNextPos())
+                                    && entry.getValue().getChessPieceColor() != Color.BLACK){
+                                        whitePiece.setPos(whitePiece.getNextPos());
+                                        whitePiece.setNextPos(whitePiece.getPos());
+                                        whitePiece.setDirections(whitePiece.getPos());
+                                        whitePiece.setAttackPositions(whitePiece.getPos());
+                                        whitePiece.setX(entry.getValue().getX());
+                                        whitePiece.setY(entry.getValue().getY());
+                                        whitePiece.getBounds().x = whitePiece.getX();
+                                        whitePiece.getBounds().y = whitePiece.getY();
+                                        whitePiece.selected = false;
                                     }
-                                    if(entry.getKey().equals(whitePiece.getNextPos2())){
-                                        whitePiece.newPos(whitePiece, entry, whitePiece.getNextPos2());
+                                    if(entry.getKey().equals(whitePiece.getNextPos2()) && entry.getValue().getChessPieceColor() != Color.BLACK){
+                                        String initialNextPos = String.valueOf(entry.getKey().charAt(0)) +
+                                                String.valueOf(Character.getNumericValue(entry.getKey().charAt(1)) - 1);
+                                        System.out.println("InitialNextPos: " + initialNextPos);
+                                        //Checks the to see if blackPiece at initialNextPos of whitePawn, if so do not move up two
+                                        if(getSquares().get(initialNextPos).getChessPieceColor() != Color.BLACK) {
+                                            whitePiece.setPos(whitePiece.getNextPos2());
+                                            whitePiece.setNextPos(whitePiece.getPos());
+                                            whitePiece.setDirections(whitePiece.getPos());
+                                            whitePiece.setAttackPositions(whitePiece.getPos());
+                                            whitePiece.setX(entry.getValue().getX());
+                                            whitePiece.setY(entry.getValue().getY());
+                                            whitePiece.getBounds().x = whitePiece.getX();
+                                            whitePiece.getBounds().y = whitePiece.getY();
+                                            whitePiece.selected = false;
+                                        }
                                     }
                                 }
-                                else{
-                                    if(entry.getKey().equals(whitePiece.getNextPos())){
-                                        whitePiece.newPos(whitePiece, entry, whitePiece.getNextPos());
-                                    }
+
+
+                                //Moving forward once
+                                if(entry.getKey().equals(whitePiece.getNextPos())
+                                        && entry.getValue().getChessPieceColor() != Color.BLACK){
+                                    whitePiece.setPos(whitePiece.getNextPos());
+                                    whitePiece.setNextPos(whitePiece.getPos());
+                                    whitePiece.setDirections(whitePiece.getPos());
+                                    whitePiece.setAttackPositions(whitePiece.getPos());
+                                    whitePiece.setX(entry.getValue().getX());
+                                    whitePiece.setY(entry.getValue().getY());
+                                    whitePiece.getBounds().x = whitePiece.getX();
+                                    whitePiece.getBounds().y = whitePiece.getY();
+                                    whitePiece.selected = false;
                                 }
+
+
+
 
                             }
                             break;
@@ -399,10 +447,17 @@ public HashMap<String,Square> getSquares(){return squares;}
         for (ChessPiece whitePiece : getWhitePieces()) {
             if(whitePiece.getBounds().contains(x,y)){
                 whitePiece.selected=true;
-                System.out.println("Can pawn attack: " + whitePiece.confirmedAttackPos(getWhitePieces(),getBlackPieces()));
-                System.out.println("Current piece attackPos: " + whitePiece);
+                System.out.println("current selected whitePiece: " + whitePiece.getPos() + " " +whitePiece.selected);
+                System.out.println("currentPos: " + whitePiece.getPos());
+                System.out.println("nextPos: " + whitePiece.getNextPos());
+                System.out.println("nextPos2: " + whitePiece.getNextPos2());
+                System.out.println("upLeftAttackPos: " + whitePiece.getAttackPositions()[0]);
+                System.out.println("upRightAttackPos: " + whitePiece.getAttackPositions()[1]);
             }
-            else{whitePiece.selected = false;}
+            else{
+                whitePiece.selected = false;
+                System.out.println("non selected whitePiece: " + whitePiece.getPos()+ " " +whitePiece.selected);
+            }
         }
 
         for (ChessPiece piece : getWhitePieces()) {

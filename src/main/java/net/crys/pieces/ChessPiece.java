@@ -154,45 +154,23 @@ public abstract class ChessPiece implements ChessPieceMethods{
         else{down = true; up = true;}
     }
 
-    //can white piece attack the black piece if the attackPos is the same as blackPiece.getPos();
-    public String confirmedAttackPos(ArrayList<ChessPiece> whitePieces,ArrayList<ChessPiece> blackPieces){
-        for(ChessPiece whitePiece:whitePieces){
-            for (int i = 0; i < blackPieces.size(); i++) {
-                // Optional: You can add logic here to only set specific objects to null
-                // For this example, we set all of them to null
-                if(blackPieces.get(i) == null){continue;}
-                switch (whitePiece.type){
-                    case PAWN:
-                        if(whitePiece.attackPositions[0] != null){
-                            //if (i == whitePiece.attackPositions.length){break;}
-                            if(whitePiece.attackPositions[0].equals(blackPieces.get(i).getPos())){
-                                blackPieces.set(i, null);
-                                return whitePiece.attackPositions[0];
-                            }
-                        }
-                        if(whitePiece.attackPositions[1] != null){
-                            //if (i == whitePiece.attackPositions.length){break;}
-                            if(whitePiece.attackPositions[1].equals(blackPieces.get(i).getPos())){
-                                blackPieces.set(i, null);
-                                return whitePiece.attackPositions[1];
-                            }
-                        }
-
-                        break;
-                    case ROOK:break;
-                    case KNIGHT:break;
-                    case BISHOP:break;
-                    case QUEEN:break;
-                    case KING:break;
-                }
-
+    public boolean isSameNextPos(ChessPiece whitePiece, ArrayList<ChessPiece> blackPieces){
+        for(ChessPiece blackPiece : blackPieces){
+            if(blackPiece.getPos().equals(whitePiece.getNextPos())){
+                return true;
             }
-
-
         }
-
-
-        return "";
+        return false;
     }
 
+    public boolean isSameNextPos2(ChessPiece whitePiece, ArrayList<ChessPiece> blackPieces){
+        for(ChessPiece blackPiece : blackPieces){
+            if(blackPiece.getPos().equals(whitePiece.getNextPos2())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public String[] getAttackPositions(){return attackPositions;}
 }
